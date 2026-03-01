@@ -1,14 +1,14 @@
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.spring") version "2.2.21"
-    id("org.springframework.boot") version "4.0.2"
-    id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm") version "1.9.25"
+    id("java-library")
     id("maven-publish")
-    id("signing")
+    kotlin("plugin.spring") version "1.9.25"
+    id("org.springframework.boot") version "3.5.6"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "ru.itpark"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 description = "chat-events-contracts"
 
 java {
@@ -21,12 +21,35 @@ repositories {
     mavenCentral()
 }
 
+publishing {
+
+    publications {
+        create<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/bibamet/event-contracts")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation ("org.jetbrains.kotlin:kotlin-reflect")
+    testImplementation ("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly ("org.junit.platform:junit-platform-launcher")
+    implementation(kotlin("stdlib"))
+    testImplementation(kotlin("test"))
 }
 
 kotlin {
